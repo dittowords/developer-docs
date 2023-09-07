@@ -21,62 +21,103 @@
   "topbarLinks": [
     {
       "name": "Support",
-      "url": "mailto:hi@mintlify.com"
+      "url": "mailto:support@dittowords.com"
     }
   ],
   "topbarCtaButton": {
     "name": "Dashboard",
-    "url": "https://dashboard.mintlify.com"
+    "url": "https://app.dittowords.com"
   },
   "tabs": [
     {
-      "name": "API Reference",
-      "url": "api-reference"
+      "name": "Changelog",
+      "url": "changelog"
+    },
+    {
+      "name": "Feedback & Support",
+      "url": "feedback-support"
+    },
+    {
+      "name": "Mintlify Refs",
+      "url": "essentials"
     }
   ],
   "anchors": [
     {
-      "name": "Documentation",
+      "name": "Help Guides",
       "icon": "book-open-cover",
-      "url": "https://mintlify.com/docs"
+      "url": "https://www.dittowords.com/docs/introduction"
     },
     {
-      "name": "Community",
-      "icon": "slack",
-      "url": "https://mintlify.com/community"
-    },
-    {
-      "name": "Blog",
+      "name": "What's New",
       "icon": "newspaper",
-      "url": "https://mintlify.com/blog"
+      "url": "https://www.dittowords.com/whats-new"
+    },
+    {
+      "name": "Figma Plugin",
+      "icon": "figma",
+      "url": "https://www.figma.com/community/plugin/798826066406007173/%E2%9C%8D%EF%B8%8F-Ditto-%7C-Manage-copy-from-design-to-production"
     }
   ],
   "navigation": [
     {
-      "group": "Get Started",
-      "pages": ["introduction", "quickstart", "development"]
+      "group": "Overview",
+      "pages": ["introduction", "quickstart", "concepts", "sample-projects"]
+    },
+    {
+      "group": "String Formats",
+      "pages": ["string-formats/json", "string-formats/ios", "string-formats/android"]
+    },
+    {
+      "group": "API Reference",
+      "pages": [
+        "api-reference/authentication",
+        {
+          "group": "Endpoints",
+          "pages": [
+            "api-reference/endpoint/get",
+            "api-reference/endpoint/create",
+            "api-reference/endpoint/update",
+            "api-reference/endpoint/delete"
+          ]
+        }
+      ]
+    },
+    {
+      "group": "CLI Reference",
+      "pages": [
+        "cli-reference/authentication",
+        {
+          "group": "Commands",
+          "pages": [
+            "cli-reference/endpoint/get",
+            "cli-reference/endpoint/create",
+            "cli-reference/endpoint/update",
+            "cli-reference/endpoint/delete"
+          ]
+        }
+      ]
+    },
+    {
+      "group": "Additional Tools",
+      "pages": [
+        "additional-tools/webhooks", 
+        {
+          "group": "SDKs",
+          "pages": ["sdks/ditto-react", "sdks/ditto-flutter", "sdks/ditto-react-native"]
+        },
+        "additional-tools/vs-code", 
+        "additional-tools/gh-action"
+      ]
     },
     {
       "group": "Essentials",
       "pages": ["essentials/markdown", "essentials/code", "essentials/images", "essentials/settings", "essentials/navigation"]
-    },
-    {
-      "group": "API Documentation",
-      "pages": ["api-reference/authentication"]
-    },
-    {
-      "group": "Endpoint Examples",
-      "pages": [
-        "api-reference/endpoint/get",
-        "api-reference/endpoint/create",
-        "api-reference/endpoint/update",
-        "api-reference/endpoint/delete"
-      ]
     }
   ],
   "footerSocials": {
-    "twitter": "https://twitter.com/mintlify",
-    "github": "https://github.com/mintlify",
-    "linkedin": "https://www.linkedin.com/company/mintsearch"
+    "twitter": "https://twitter.com/dittowords",
+    "github": "https://github.com/dittowords",
+    "linkedin": "https://www.linkedin.com/company/ditto-app"
   }
 }

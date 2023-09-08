@@ -1,0 +1,146 @@
+---
+title: 'JSON'
+description: 'You can fetch text from Ditto in 4 major JSON string file formats: flat, structured, nested, and ICU.'
+icon: 'js'
+---
+
+## Flat JSON
+This format provides a direct mapping from string IDs to strings, without additional metadata.
+```json
+{
+  "[TEXT ID]": "[TEXT OF TEXT ITEM]",
+  "[TEXT ID]": "[TEXT OF TEXT ITEM]",
+  // Text items with plural values will have those plural values 
+  // included in the output as individual key/value pairs.
+  // Plural forms: zero, one, two, few, many, other
+  "[TEXT ID]_[PLURAL FORM]": "[TEXT OF PLURAL FORM]",
+  ...
+}
+```
+To fetch this via the **API**, provide the query parameter `?format=flat`. 
+
+To fetch this via the **CLI**, specify `format: flat` in the `config`.
+
+## Structured JSON
+This format maps string IDs to an object of each text item's metadata. 
+This format is recommended if metadata fields are used directly in development.
+The `text` field will always be included, with additional fields based on those included on the text item: 
+* `status`
+* `notes`
+* `variables`
+* `plurals`
+* `variants`
+* `rich_text`
+
+```json
+{
+  "[TEXT ID]": {
+    "text": "[TEXT OF TEXT ITEM]",
+    "status": "[STATUS OF TEXT ITEM]", // optional
+    "notes": "[NOTES OF TEXT ITEM]", // optional
+    "tags": [ ... ], // optional: array of strings
+    "variables": { // optional
+      "[VARIABLE NAME]": {
+          ... // variable properties: example, fallback, etc
+      }
+    },
+    "plurals": { // optional: only if plurals are enabled for text
+      // Plural forms specified are listed in object
+      // Plural forms: zero, one, two, few, many, other
+      "[PLURAL FORM]": "[TEXT FOR PLURAL FORM]",
+      ...
+    },
+    "variants": { // optional: only present if text has variant values and not a single-variant export
+      "[VARIANT ID]": {
+        "text": "[TEXT OF VARIANT]",
+        "variables": { ... }, // see above `variables` property
+        "plurals": { ... } // see above `plurals` property
+      },
+    },
+    // This field is only included if `?includeRichText=true`
+    // is passed as a query parameter. Learn more: 
+    // https://www.dittowords.com/docs/rich-text
+    "rich_text": "[HTML CONTENT OF TEXT ITEM]"
+  },
+  "[TEXT ID]": { ... },
+  ...
+}
+```
+To fetch this via the **API**, provide the query parameter `?format=structured`. 
+
+To fetch this via the **CLI**, specify `format: structured` in the `config`.
+
+## Nested JSON
+
+<Info>
+  **Note:** This format is only available when fetching components (not projects).
+</Info>
+
+This format nests the JSON output based on nesting in the component library. 
+
+In Ditto, full component names follow [forward-slash naming convention](https://www.dittowords.com/docs/organizing-your-component-library) based on the groups/blocks they are nested in.
+
+In the nested JSON format, component IDs are split according to the "forward slash" replacement character in a workspace's [component ID configuration](https://www.dittowords.com/docs/developer-ids). 
+Each part of the ID split using this delimiter translates to a layer of depth in the generated nested output.
+
+```json
+{
+  "onboarding": {
+    "header": {
+      "title": "Welcome!",
+      "subtitle": "We're happy to have you here"
+    },
+    "body": {
+      "CTA": "Let's get started"
+    }
+  },
+  "authentication": {
+    "new-user-cta": "Create an account",
+    "existing-user-cta": "Sign in"
+  },
+  "toast": "Thanks for signing up!"
+}
+```
+Assuming a `/` replacement character of `.` in the component ID settings, the JSON above would be generated from the following component IDs:
+```
+onboarding.header.title
+onboarding.header.subtitle
+onboarding.body.CTA
+authentication.new-user-cta
+authentication.existing-user-cta
+toast
+```
+
+To fetch this via the **API**, provide the query parameter `?format=nested`. 
+
+To fetch this via the **CLI**, specify `format: nested` in the `config`.
+
+## ICU JSON
+This format provides a mapping from string IDs to strings in accordance with [ICU message format](https://icu.unicode.org/home).
+```json
+{
+  "onboarding.header.title": "Welcome, {username}!",
+  "onboarding.header.subtitle": "We''re happy to have you here",
+  "authentication.message": "You are {role, select, admin {an administrator} viewer {a viewer} other {currently logged in}}.",
+  "cart.count": "{count, plural, =0 {No items in the cart} =1 {One item in the cart} other {{count} items in the cart}}"
+}
+```
+* A Map or List variable in Ditto translates to an ICU SelectFormat argument, with the variable's first value used as the other key.
+* Single quotes (`'`) will be escaped with another single quote (i.e "You're logged in" -> "You''re logged in")
+* Pluralization in Ditto translates to an ICU PluralFormat argument:
+    * The PluralFormat, if present, will always encompass the rest of the string, within which variables can be nested.
+    * The name of the argument will always be `count` (i.e. `{count, plural, ...}`)
+
+To fetch this via the **API**, provide the query parameter `?format=icu`. 
+
+To fetch this via the **CLI**, specify `format: icu` in the `config`.
+
+## Variant-specific exports
+For each of these JSON formats, you can choose to fetch the text of a single variant. For variant-specific exports, two metadata keys for the variant will also be included:
+```json
+{
+  "__variant-name": "French",
+  "__variant-description": "Copy localized for native French speakers",
+  ...
+}
+```

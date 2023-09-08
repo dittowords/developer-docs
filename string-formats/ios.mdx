@@ -1,0 +1,84 @@
+---
+title: 'iOS Strings'
+description: 'Learn how to preview changes locally'
+icon: 'apple'
+---
+
+## Strings
+The `.strings` format is used to surface text in iOS applications. For string plural forms, see the `.stringsdict` format (below).
+```swift
+"welcome.title" = "Welcome, %1$@!";
+
+/* This should only be used on the logout screen */
+"logout" = "Logout";
+```
+* Ditto Variables are replaced with interpolation placeholders **with a string (@) format specifier**; 
+in your client code, you'll need to ensure that all variables passed as arguments are first converted into strings.
+* Notes associated with text items will be included as comments above a given key-value pair.
+* If this format is exported for a specific variant, two comments containing variant metadata will also be included:
+```swift
+/* Variant Name: French */
+/* Variant Description: Copy localized for native French speakers */
+
+"welcome.title" = "Welcome, %1$@!";
+...
+```
+
+## StringsDict
+The `.stringsdic` format is used to surface plural form text in iOS applications; text without pluralization enabled in Ditto is excluded from output. 
+For integrating strings that are not pluralized, you should use `.stringsdict` in conjunction with iOS `.strings`.
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<plist version="1.0">
+    <dict>
+        <!-- Variables: cartCount, username -->
+        <key>cart.header</key>
+        <dict>
+            <key>NSStringLocalizedFormatKey</key>
+            <string>%1$#@count@</string>
+            <key>count</key>
+            <dict>
+                <key>NSStringFormatSpecTypeKey</key>
+                <string>NSStringPluralRuleType</string>
+                <key>NSStringFormatValueTypeKey</key>
+                <string>d</string>
+                <key>one</key>
+                <string>%3$@, you have one item in the cart.</string>
+                <key>two</key>
+                <string>%3$@, you have a couple of items in the cart.</string>
+                <key>other</key>
+                <string>%3$@, you have %2$@ items in the cart.</string>
+            </dict>
+        </dict>
+    </dict>
+</plist>
+```
+The order in which variables are provided as arguments in Swift is relevant to the output. The following code could be used with the example output above:
+```swift
+let localizedString = String.localizedStringWithFormat(
+    NSLocalizedString(
+        "cart", 
+        comment: "A description of the user's cart"
+    ),
+    // The first argument should always be an integer to determine which plural
+    // form to use
+    pluralcount, 
+    // Subsequent arguments should be provided in alphabetical order according
+    // to the names of the Ditto Variables used in a given text item
+    String(pluralcount),
+    username,
+)
+```
+* A comment structured like `<!-- Variables: variable_one, variable_two, ... -->` is included above each key in the `.stringsdict` file to indicate the order in which variables should be passed (this will always be alphabetical).
+* All Ditto Variables are replaced with interpolation placeholders **with a string (@) format specifier** -- in your client code, you'll need to ensure that all variables passed as arguments are first converted into strings.
+* If this format is exported for a specific variant, two comments containing variant metadata will also be included:
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Variant Name: French -->
+<!-- Variant Description: Copy localized for native French speakers -->
+<plist version="1.0">
+   ...
+</plist>
+```
+## TODO: Insert additional advice on using it for iOS
+(fill me in)

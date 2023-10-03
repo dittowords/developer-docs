@@ -1,6 +1,37 @@
 ---
 title: 'Android XML'
-description: 'Learn how to preview changes locally'
 icon: 'android'
 ---
+Ditto allows Android developers to fetch the latest text as pre-formatted XML resources (`.xml`) in accordance with [Android strings](https://developer.android.com/guide/topics/resources/string-resource) and [Android localization](https://developer.android.com/guide/topics/resources/localization) guidance. 
 
+ If you're fetching this format via the API, it will have a HTTP `Content-Type` header of `text/xml`.
+
+**Example:** 
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+  <string name="welcome_text" ditto_api_id="welcome-text">Welcome to the app!</string>
+  <string name="logout" ditto_api_id="logout">Logout</string>
+</resources>
+```
+**Instructions:** 
+
+To fetch this via the **API**, provide the query parameter `?format=android`.
+
+To fetch this via the **CLI**, specify `format: android` in the config.
+
+**Format details:**
+* Text items in Ditto are mapped to `<string>` tags and given name values that correspond to a given text item's Developer ID with any `-` characters in the ID replaced with `_`. An additional `ditto_api_id` field is also added with the original Developer ID.
+* Variables in Ditto are mapped to `<xliff:g>` tags and given an id and example values that correspond to a given variable's name and example values, respectively.
+* A text item with plurals will have a `<plurals>` tag generated for it, along with an `<item>` for each plural form that is configured in Ditto (note: `<item id="other">` will always be generated). Plural items also support variables via `<xliff:g>` tags.
+* If this format is exported for a specific variant, two comments containing variant metadata will also be included:
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Variant Name: French -->
+<!-- Variant Description: Copy localized for native French speakers -->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+  <string name="welcome_text" ditto_api_id="welcome-text">Welcome to the app!</string>
+  <string name="logout" ditto_api_id="logout">Logout</string>
+</resources>
+```

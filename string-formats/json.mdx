@@ -1,11 +1,19 @@
 ---
 title: 'JSON'
-description: 'You can fetch text from Ditto in 4 major JSON string file formats: flat, structured, nested, and ICU.'
 icon: 'js'
 ---
 
+[JSON (Javascript Object Notation)](https://www.json.org/json-en.html) is a standard file format that allows you to map data in attribute-value pairs. 
+
+You can fetch text from Ditto in 4 JSON string file formats: flat, structured, nested, and ICU. As this format is framework-agnostic, JSONs are frequently used to store strings in web development. 
+
+If you're fetching this format via the API, all JSON formats have a HTTP `Content-Type` header of `application/json`.
+
 ## Flat JSON
 This format provides a direct mapping from string IDs to strings, without additional metadata.
+
+**Example:** 
+
 ```json
 {
   "[TEXT ID]": "[TEXT OF TEXT ITEM]",
@@ -17,6 +25,9 @@ This format provides a direct mapping from string IDs to strings, without additi
   ...
 }
 ```
+
+**Instructions:**
+
 To fetch this via the **API**, provide the query parameter `?format=flat`. 
 
 To fetch this via the **CLI**, specify `format: flat` in the `config`.
@@ -31,6 +42,8 @@ The `text` field will always be included, with additional fields based on those 
 * `plurals`
 * `variants`
 * `rich_text`
+
+**Example:** 
 
 ```json
 {
@@ -66,6 +79,8 @@ The `text` field will always be included, with additional fields based on those 
   ...
 }
 ```
+**Instructions:**
+
 To fetch this via the **API**, provide the query parameter `?format=structured`. 
 
 To fetch this via the **CLI**, specify `format: structured` in the `config`.
@@ -82,6 +97,8 @@ In Ditto, full component names follow [forward-slash naming convention](https://
 
 In the nested JSON format, component IDs are split according to the "forward slash" replacement character in a workspace's [component ID configuration](https://www.dittowords.com/docs/developer-ids). 
 Each part of the ID split using this delimiter translates to a layer of depth in the generated nested output.
+
+**Example:** 
 
 ```json
 {
@@ -110,6 +127,7 @@ authentication.new-user-cta
 authentication.existing-user-cta
 toast
 ```
+**Instructions:**
 
 To fetch this via the **API**, provide the query parameter `?format=nested`. 
 
@@ -117,6 +135,9 @@ To fetch this via the **CLI**, specify `format: nested` in the `config`.
 
 ## ICU JSON
 This format provides a mapping from string IDs to strings in accordance with [ICU message format](https://icu.unicode.org/home).
+
+**Example:** 
+
 ```json
 {
   "onboarding.header.title": "Welcome, {username}!",
@@ -130,6 +151,8 @@ This format provides a mapping from string IDs to strings in accordance with [IC
 * Pluralization in Ditto translates to an ICU PluralFormat argument:
     * The PluralFormat, if present, will always encompass the rest of the string, within which variables can be nested.
     * The name of the argument will always be `count` (i.e. `{count, plural, ...}`)
+
+**Instructions:**
 
 To fetch this via the **API**, provide the query parameter `?format=icu`. 
 

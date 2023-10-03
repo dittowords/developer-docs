@@ -1,20 +1,31 @@
 ---
 title: 'iOS Strings'
-description: 'Learn how to preview changes locally'
 icon: 'apple'
 ---
 
 ## Strings
-The `.strings` format is used to surface text in iOS applications. For string plural forms, see the `.stringsdict` format (below).
+The `.strings` format is used to surface text in iOS applications. If you're fetching this format via the API, it will have a HTTP `Content-Type` header of `text/plain`.
+
+**Example:** 
+
 ```swift
 "welcome.title" = "Welcome, %1$@!";
 
 /* This should only be used on the logout screen */
 "logout" = "Logout";
 ```
+**Instructions:** 
+
+To fetch this via the **API**, provide the query parameter `?format=ios-strings`.
+
+To fetch this via the **CLI**, specify `format: ios-strings` in the config.
+
+**Format details:**
+
 * Ditto Variables are replaced with interpolation placeholders **with a string (@) format specifier**; 
 in your client code, you'll need to ensure that all variables passed as arguments are first converted into strings.
 * Notes associated with text items will be included as comments above a given key-value pair.
+* To use string plural forms, you will need to use the `.stringsdict` format ([see below](http://localhost:1234/string-formats/ios#stringsdict)) in conjunction with the `.strings` format.
 * If this format is exported for a specific variant, two comments containing variant metadata will also be included:
 ```swift
 /* Variant Name: French */
@@ -25,8 +36,13 @@ in your client code, you'll need to ensure that all variables passed as argument
 ```
 
 ## StringsDict
-The `.stringsdic` format is used to surface plural form text in iOS applications; text without pluralization enabled in Ditto is excluded from output. 
-For integrating strings that are not pluralized, you should use `.stringsdict` in conjunction with iOS `.strings`.
+The `.stringsdict` format is used to surface plural form text in iOS applications; text without pluralization enabled in Ditto is excluded from output. 
+For integrating strings that are not pluralized, you should use `.stringsdict` in conjunction with iOS `.strings`. 
+
+If you're fetching this format via the API, it will have a HTTP `Content-Type` header of `text/xml`.
+
+**Example:** 
+
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
 <plist version="1.0">
@@ -53,6 +69,14 @@ For integrating strings that are not pluralized, you should use `.stringsdict` i
     </dict>
 </plist>
 ```
+**Instructions:**
+
+To fetch this via the **API**, provide the query parameter `?format=ios-stringsdict`.
+
+To fetch this via the **CLI**, specify `format: ios-stringsdict` in the config.
+
+**Format details:**
+
 The order in which variables are provided as arguments in Swift is relevant to the output. The following code could be used with the example output above:
 ```swift
 let localizedString = String.localizedStringWithFormat(
@@ -80,5 +104,5 @@ let localizedString = String.localizedStringWithFormat(
    ...
 </plist>
 ```
-## TODO: Insert additional advice on using it for iOS
-(fill me in)
+
+

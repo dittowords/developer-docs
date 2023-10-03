@@ -1,37 +1,69 @@
 ---
 title: Introduction
 description: "Welcome to the home of your new documentation!"
-icon: 'circle-1'
 ---
 
-<img
-  className="block dark:hidden"
-  src="/images/hero-light.svg"
-  alt="Hero Light"
-/>
-<img
-  className="hidden dark:block"
-  src="/images/hero-dark.svg"
-  alt="Hero Dark"
-/>
+## What is Ditto?
 
-## Setting up
+Ditto manages your team’s product text — from draft to design to development — with a single source of truth.
 
-The first step to world-class documentation is setting up your editing environnments.
+For developers, Ditto functions as infrastructure for product text, keeping strings up to date and managing everything from string keys, variable interpolation, and plurals, to file formats, localization, and variations. 
+
+[insert image from NUX]
+
+## Why use Ditto’s developer integrations?
+
+Shipping product **quickly**, **safely**, and **with consistency** are the core elements of **scale**. Here’s how we can help: 
+
+- **Save work for developers:** Say goodbye to the stray Slack message or bug ticket to update text (“Hey, can you update the text to actually say [XYZ]?”). Whether it’s in prod or in QA, Ditto reduces the time spent hunting down strings and gives time back to developers for real engineering work.
+- **A single source of truth, accessible via API:** Rather than multiple overlapping, disjointed sources for product text (Figma, a spreadsheet, a document, a localization tool, directly in development, etc.), Ditto connects sources so that everyone is on the same page. The latest version of text is always accessible directly via our API.
+- **Building automated workflows:** Use our CLI in a CI pipeline, build automation with our webhooks, or use our API to bring text to other destinations; Ditto’s developer integrations serve as building blocks.
+- **Safety and formatting:** With Ditto, developers get ready-to-use string files. Ditto handles all of the variable interpolation, pluralization, ID-naming, platform-specific formatting (JSON/ICU/iOS/Android), and localization-readiness.
+
+## How is Ditto different from a headless CMS?
+
+You can think of Ditto’s developer tooling as a headless CMS for your team’s product text. Because Ditto manages **product text**, it’s built for how teams work on product:
+
+- **Built for microcopy** — Think everything from CTAs to error messages to disclosures, as opposed to structured, long-form content like a blog post
+- **Focused on componentization** — Ditto treats text as reusable components, rather than individual one-offs — like your design systems and frontend code do with UI elements.
+- **Integrates with your existing stack** — Ditto fits into your existing product development workflows, with tools like our our Figma plugin, VS Code extension, GitHub Action, localization/TMS integrations, SDKs, and framework- and platform-specific formats
+- **Manage the distribution of your strings** — Ditto provides all the tools you need to keep strings up to date locally, and you can manage how it gets distributed, just like the rest of your code (i.e. deployed to a staging/QA environment, to production, to a CDN)
+
+## How does Ditto work?
+
+Ditto functions at both the **application layer** and the **API layer** to keep text in sync across sources. 
+
+**At the application layer**, teams use our web-app and Figma plugin to edit, review, and translate text. Core to this usage are **components** in Ditto (see Concepts[LINK]). In Ditto, text is treated as reusable components, instead of one-off, isolated elements to help enforce consistency at scale.
+
+**At the API layer**, Ditto automates the updating and formatting of strings in development using our 4 core tools:
 
 <CardGroup cols={2}>
   <Card
-    title="Edit Your Docs"
-    icon="pen-to-square"
+    title="API"
+    icon="plug"
     href="https://mintlify.com/docs/quickstart"
   >
-    Get your docs set up locally for easy development
+    Fetches formatted, up-to-date text (and metadata) from Ditto 
   </Card>
   <Card
-    title="Preview Changes"
-    icon="image"
+    title="CLI"
+    icon="square-terminal"
     href="https://mintlify.com/docs/development"
   >
-    Preview your changes before you push to make sure they're perfect
+    Wraps our API to directly update strings in local development
+  </Card>
+  <Card
+    title="Webhooks"
+    icon="webhook"
+    href="https://mintlify.com/docs/quickstart"
+  >
+    Sends updated information based on events in Ditto (i.e. edits, status changes, ID changes, etc.)  
+  </Card>
+  <Card
+    title="SDKs"
+    icon="box-open"
+    href="https://mintlify.com/docs/development"
+  >
+    Helps surface strings by their keys for specific frameworks
   </Card>
 </CardGroup>

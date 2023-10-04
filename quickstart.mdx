@@ -1,8 +1,144 @@
 ---
 title: 'Quickstart'
-description: 'Start building awesome documentation in under 5 minutes'
+description: 'Instructions on getting set up to sync text in 10 minutes'
 ---
 
-## Setup your development
+## Authenticating
 
-Learn how to update your docs locally and and deploy them to the public.
+**Time Estimate:** 2 minutes
+<Steps>
+  <Step title="Enable developer integrations">
+    To start using Ditto’s developer integrations, you’ll need to enable developer integrations for your workspace on the [developer integrations page](https://app.dittowords.com/account/devtools). 
+    
+    If the developer integrations add-on isn’t a part of your current plan, you can enable a 2-week trial. 
+  </Step>
+  <Step title="Generate an API key">
+    This will allow you fetch text from Ditto via our API or CLI. Remember to store this key safely! 
+  </Step>
+</Steps>
+
+## Setting up the sample project
+
+**Time Estimate:** 10 minutes
+
+In each Ditto workspace, there is a sample project that demonstrates what Ditto usage might look like, with sample comments, metadata, components, and a sample Figma file to connect to. 
+
+To quickly test drive Ditto’s developer integrations, you can connect the sample project in your workspace to a frontend using one of our sample repos. This is helpful for understanding: 
+
+- How Ditto keeps text in sync from design to development (using our CLI)
+- How components in Ditto work (and integrate with a project)
+- How Ditto’s developer integrations work for React, iOS, or Android
+
+**Instructions:** 
+<Steps>
+    <Step title="Navigate to the sample project">
+        This project (and its corresponding components) should be in every workspace. 
+    </Step>
+    <Step title="Duplicate one of sample repos.">
+        Sample repos can be found here. [TODO: LINK] Choose the one most similar to the framework you usually work with!
+
+        The repo is already set up with a pre-configured CLI config file and the keys from the sample components in your workspace.
+    </Step>
+    <Step title="Install the Ditto CLI">
+        Navigate to the `/ditto` [TODO: FIX] directory and install our CLI [TODO: LINK]. To install the CLI as a developer dependency:
+        
+        <CodeGroup>
+        ```jsx npm
+        npm i --save-dev @dittowords/cli
+        ```
+        ```jsx yarn
+        yarn add --dev @dittowords/cli
+        ```
+        </CodeGroup>
+
+        The first time you run the Ditto CLI, you'll be asked to provide an API key. 
+
+    </Step>
+    <Step title="That's it! 🎉">
+        You're all set up. Run `ditto-cli pull` to fetch down the latest changes from Ditto. 
+        
+        You can also try making an edit in Ditto and then pulling in the latest updates to your string files via the CLI. 
+    </Step>
+</Steps>
+
+## Setting up Ditto in your own repository
+
+Now that you’ve built an understanding of how Ditto works, you can set up Ditto to manage your own team’s strings. 
+
+Don’t worry — you don’t have to do this all at once. Especially for teams with large and complex codebases, it’s always an option to have Ditto manage the text for a specific product area and expanding coverage over time. 
+
+We’ll describe setup solutions depending on how you currently manage strings in your code-base. 
+
+- **Option 1: If you currently manage text via string files of any kind (JSON, iOS, XML, etc.).**
+    
+    If you currently localize your text or build for mobile (iOS, Android), you fall in this category.
+- **Option 2: If you currently manage hardcoded text.**
+
+If you have a mix of the two in your code base, we’d recommend starting with Option 1. 
+
+### Option 1: If you currently manage string files
+<Steps>
+    <Step title="Import your string file(s) to your Ditto component library">
+    Head to your [component library](https://app.dittowords.com/components) and import your string file. 
+    The import will preserve all of your existing string keys from the file — meaning you can immediately start using Ditto to fetch and update your string files with minimal adjustment to your code base. 
+    
+    For more information on importing strings, check out [this guide](https://www.dittowords.com/docs/importing-string-files). 
+    Have a string file format we don’t yet support? [Let us know](mailto:support@dittowords.com)! 
+    </Step>
+    <Step title="Install the Ditto CLI in your repository">
+    Instructions for installing and setting up the CLI can be found here [TODO: LINK]. 
+    </Step>
+    <Step title="Configure CLI to fetch the imported components">  
+    You can specify the components and the string file format(s) in the CLI config. 
+    </Step>
+    <Step title="Update file routes">  
+    With the strings now pulled down via the CLI, you can update the existing routes to string files to the new file paths. 
+    </Step>
+</Steps>
+And you’re done! 🎉 You now have the strings from your code base synced to Ditto. 
+
+### Option 2: If you currently hard code strings
+
+If you currently have strings hardcoded in your repository, you’ll have to decouple them into string files in order to have Ditto manage updates to strings. 
+
+In addition to being easier to maintain, decoupling your content and code makes it easier to scale — meaning minimal future work required to localize or A/B test. 
+If it's easier, you can also start with an initial product area and expand the amount of decoupling content over time to increase the surface area of text managed by Ditto. 
+
+<Steps>
+    <Step title="Create components for strings">
+        You can do this in a couple of different ways, depending on which is the best current source of truth for your team’s product text. 
+        <AccordionGroup>
+            <Accordion title="If developers reference product text in design files" icon="figma">
+                We recommend creating Ditto components from Figma files. To do this, open our [Figma plugin](https://www.figma.com/community/plugin/798826066406007173/ditto-manage-copy-from-design-to-production) in a file to connect it to Ditto. 
+                
+                You can use [component suggestions](https://www.dittowords.com/docs/component-suggestions) to quickly componentize text in a file. If it’s helpful, you also can loop in a designer at this stage to quickly build up a working text component library from text in design files.
+            </Accordion>
+            <Accordion title="If developers reference spreadsheets of text (and metadata)" icon="table">
+                You can [import the spreadsheet](https://www.dittowords.com/docs/importing-csv-files) directly to your Ditto component library. When importing, you can map columns to fields in Ditto.
+            </Accordion>
+        </AccordionGroup>
+    </Step>
+    <Step title="Install the Ditto CLI in your repository">
+    Instructions for installing and setting up the CLI can be found here. [TODO: Link CLI]
+    </Step>
+    <Step title="Fetch your component library down locally as string files">
+    You can specify the components and the string file format(s) in the CLI config. 
+    </Step>
+    <Step title="Replace hard-coded text with developer IDs"> 
+    From the string and IDs pulled down via the CLI, replace the hard-coded text with the developer IDs to connect the two. 
+    
+    A few tools to streamline this process include:
+    
+    - Use a SDK like our React SDK [TODO: Link] or another framework-specific SDK to surface the text associated with the IDs in the string files.
+    - Use our VS Code Extension [TODO: Link] to insert string keys directly in your IDE based on matching text.
+    - Use our [Figma plugin](https://www.figma.com/community/plugin/798826066406007173/ditto-manage-copy-from-design-to-production) to quickly surface and copy over the Ditto developer IDs of selected text in Figma. 
+    You can also open our Figma plugin in Figma Dev Mode, which will surface IDs in addition to framework-specific code snippets.
+    </Step>
+</Steps>
+
+### Building a Robust Workflow
+
+With the basics set up, you also can extend to be more powerful in your team’s workflow:
+
+- **Connecting components to design files** — this keeps text in sync from design to development. You can do this in a few seconds with [component attach suggestions](https://www.dittowords.com/docs/what-is-ditto)!
+- **Have Ditto handle more aspects of your development process** — whether it’s the updating of keys or opening of pull requests, you can extend functionality by using our webhooks, GitHub Action, VSCode Extension, and more.

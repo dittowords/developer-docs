@@ -1,0 +1,292 @@
+---
+title: 'Webhooks'
+description: 'Webhooks enable HTTP payloads to be sent to an external service when data in Ditto is changed.'
+---
+
+## Setup
+
+You can configure webhooks for your workspace in the **Webhooks** section of your team's [developer integrations](https://app.dittowords.com/account/devtools).
+
+### Signing Key
+
+Prior to creating any webhook endpoints, it's essential to generate and securely store a **signing key**. This key plays a crucial role in appending a signature to all outbound webhook payloads, allowing your server to authenticate that a particular request originates from Ditto.
+
+<AccordionGroup>
+    <Accordion title="Signing key requirements">
+        Signing keys must be a minimum of 16 characters long. We also recommend that they be randomly generated and stored in a secure environment.
+    </Accordion>
+    <Accordion title="Generating a signing key">
+        The **Generate a key for me** button will generate a random signing key and copy it to your clipboard. 
+
+        Alternatively, you can easily generate a random string of characters to serve as a signing key using built-in command line utilities. For example, on most Unix systems, `uuidgen` is available:
+        ```
+        $ uuidgen
+        29D634FF-7831-4468-AA70-0C4997031777
+        ```
+    </Accordion>
+    <Accordion title="Rotating your signing key">
+        When changing your signing key, it’s recommended that you anticipate the key change on your server to avoid missed events.
+        
+        **Signing key rotation without missed events:**
+        1. Generate a new signing key.
+        2. Update your webhook server’s code to temporarily accept requests signed with either the old signing key or the new signing key.
+        3. Save the new signing key in Ditto.
+        4. Update your webhook server’s code to only accept requests using the new signing key.
+    </Accordion>
+</AccordionGroup>
+
+Once you’ve saved your key in Ditto, it is encrypted and cannot be directly accessed. However, you can preview the last four characters of your saved key. 
+
+### Creating a Webhook
+You can open the modal for creating webhooks via the **Create Webhook** button.
+
+Each webhook must be assigned **a name, a URL, and have at least one trigger activated**. While there are no strict guidelines for URLs, it is strongly advised that they direct to secure endpoints utilizing HTTPS.
+
+Before saving a webhook, the URL must be validated with a test request. See [Example Webhook Server](https://localhost:3333/additional-tools/webhooks#example-webhook-server) below for details on configuring your webhook server to process a test request.
+
+## Request Headers
+
+Every request sent to a webhook endpoint will have the following three headers included:
+
+- `x-ditto-request-id` — a v4 uuid uniquely identifying a given request. This identifier can be cross-referenced 1:1 with delivery history exported from inside of Ditto.
+- `x-ditto-timestamp` — a Unix timestamp identifying the time at which the request was made. This timestamp is included in the signature and can therefore be used to guard against replay attacks.
+- `x-ditto-signature` — a signature (HMAC-SHA256) created using your workspace’s webhook signing key, by concatenating the request ID, the timestamp of the request and the request body (each separated by a period).
+
+The JavaScript code below demonstrates how the values for these headers are generated:
+
+```jsx
+const crypto = require("crypto");
+const uuid = require("uuid");
+
+const requestId = uuid.v4();
+const timestamp = new Date().getTime();
+const strBody = JSON.stringify(request.body);
+
+const signatureData = `${requestId}.${timestamp}.${strBody}`;
+const signature = crypto
+  .createHmac("sha256", signingKey)
+  .update(signatureData)
+  .digest("hex");
+
+const headers = {
+	"x-ditto-request-id": requestId,
+  "x-ditto-timestamp": timestamp,
+  "x-ditto-signature": signature
+}
+```
+
+## Request Validation
+
+Ditto expects all webhook consumers to return a status code between 200 and 299 to indicate successful payload processing. To enhance your security, it is strongly advised to perform the following actions on your server prior to accepting a webhook payload and issuing a success response:
+1. **Validate the signature included in the `x-ditto-signature` header.**
+    1. Concatenate the request ID, the timestamp, and a string representation of the request body into a single string, with each component separated by the `.` character
+    `${requestId}.${timestamp}.${JSON.stringify(req.body)}`;
+    2. Using your signing key, sign the concatenated value using HMAC-256, encoded as hex.
+    3. Validate that the signed value you’ve generated matches the value in the `x-ditto-signature` header. If it does not match, then the request is not valid and an error response should be returned.
+2. **(Optional) Ensure idempotence by tracking request IDs.**
+    1. After validating the signature of a request, track the request ID in a persistent data store (like Redis).
+    2. Before processing new requests, check your data store to see if a given request has been seen before; if it has already been processed, then the request is not valid and an error response should be returned.
+3. **(Optional) Validate the timestamp included in the `x-ditto-timestamp` header.**
+    1. Decide on a time window (e.g. 6 minutes to allow for retries) outside of which you will not accept requests.
+    2. Check that the time elapsed since the timestamp in the x-ditto-timestamp header does not exceed your established time window. If it exceeds the time window, then the request is not valid and an error response should be returned.
+
+See [Example Webhook Server](https://localhost:3333/additional-tools/webhooks#example-webhook-server) below for example code for request validation in a Node.js environment.
+
+
+## Error Handling
+
+If Ditto receives an error response from your server, it will retry sending a payload 3 additional times:
+- 1 minute following the initial request
+- 2 minutes following the first retry
+- 3 minutes following the second retry.
+
+If a given endpoint returns a non-success response for more than 10 requests in a 10 minute window, the webhook will be automatically disabled. If a webhook has been disabled, it can be re-enabled by revalidating with a test request. 
+
+## Event Reference
+
+All request bodies sent to webhook endpoints will have `event` and `data` properties. 
+
+### Component Creation
+
+Emitted any time a component is created in Ditto.
+
+```tsx
+{
+  "event": "Component_Creation",
+  "data": {
+		"componentId": "test_component",
+		"folderId": "test_folder", // null if not in a folder
+		"name": "Test Component",
+		"text": "This is a test component.",
+		"status": "NONE",
+		"notes": "",
+		"tags": ["test_tag"]
+	}
+}
+```
+
+### Component Deletion
+
+Emitted any time a component is deleted in Ditto.
+
+```tsx
+{
+  "event": "Component_Deletion",
+  "data": {
+		"componentId": "test_component",
+		"folderId": "test_folder", // null if not in a folder
+		"name": "Test Component"
+	}
+}
+```
+
+### Component Text Change
+
+Emitted any time a component’s base text is changed in Ditto. *Does not emit when variant text, plural text, or rich text styling is changed.*
+
+```tsx
+{
+  "event": "Component_TextChange",
+  "data": {
+		"componentId": "test_component",
+		"folderId": "test_folder", // null if not in a folder
+		"textBefore": "This is a test component.",
+		"textAfter": "This is a test component!"
+	}
+}
+```
+
+### Component Status Change 
+
+Emitted any time a component’s status is changed in Ditto.
+
+```tsx
+{
+  "event": "Component_StatusChange",
+  "data": {
+		"componentId": "test_component",
+		"folderId": "test_folder", // null if not in a folder
+		"statusBefore": "NONE",
+		"statusAfter": "WIP"
+	}
+}
+```
+
+### Component ID Change
+
+Emitted any time a component’s developer ID is changed in Ditto.
+
+```tsx
+{
+  "event": "Component_IdChange",
+  "data": {
+		"componentIdBefore": "test_component",
+		"componentIdAfter": "test_component_1",
+		"folderId": "test_folder", // null if not in a folder
+	}
+}
+```
+
+### Test Event
+
+Emitted when sending a test request while creating a webhook.
+
+```tsx
+{
+  "event": "TestEvent",
+  "data": {
+		"message": "Hello, Ditto!"
+	}
+}
+```
+
+## Example Webhook Server
+
+Here is an annotated code sample showing a simple Node.js server to process webhook events from Ditto:
+
+```tsx
+
+const express = require("express");
+const crypto = require("crypto");
+const app = express();
+
+// Payloads from Ditto will always be JSON, so ensure your server
+// is configured to parse JSON bodies
+app.use(express.json());
+
+// The port for the webhook test server to run on
+const port = process.env.PORT || 4321;
+
+// This is the key that you've provided
+const WEBHOOK_SIGNING_KEY = process.env.WEBHOOK_SIGNING_KEY || "xxxxxxx";
+
+// Webhook events will always be sent via POST request
+app.post("/", (req, res) => {
+  console.log(`--------\nReceived event: '${req.body.event}'`);
+
+  const {
+		"x-ditto-request-id": requestId,
+		"x-ditto-timestamp": timestamp, 
+		"x-ditto-signature": signature
+	} = req.headers;
+
+  const threeMinutesAgo = new Date().getTime() - 1000 * 60 * 3;
+
+  // (Optional)
+  // Prevent replay attacks by verifying that the timestamp
+  // of the webhook is within a reasonable threshold
+  if (timestamp < threeMinutesAgo) {
+    console.error("❌ Payload is expired");
+    return res.status(400).send();
+  } else {
+    console.log(`✅ Timestamp (${timestamp}) is within past 3 minutes`);
+  }
+
+  // Get the input data by concatenating three things, with '.' separating them:
+  // - the request id
+  // - the timestamp
+  // - the stringified request body
+  const inputData = `${requestId}.${timestamp}.${JSON.stringify(req.body)}`;
+
+  // Compute a signature using your webhook signing key and the
+  // input data
+  const computedSignature = crypto
+    .createHmac("sha256", WEBHOOK_SIGNING_KEY)
+    .update(inputData)
+    .digest("hex");
+
+  // Validate that the payload is from Ditto and hasn't been tampered
+  // with by checking that the signature from the header matches your
+  // computed signature
+  if (signature !== computedSignature) {
+    console.error("❌ Invalid signature");
+    return res.status(400).send();
+  } else {
+    console.log(`✅ Signature is valid`);
+  }
+
+// (Optional)
+// Ensure we never process the same request more than once.
+//
+// const key = `ditto-webhook_${requestId}`;
+// const value = await redis.get(key);
+// if (value) {
+//   console.error(`❌ Request ${requestId} has already been processed`);
+//   return;
+// }
+//
+// await redis.set(key, true, "EX", 0);
+
+  console.log(`Payload: ${JSON.stringify(req.body, null, 2)}`);
+
+	// do something with the payload!
+
+  return res.status(200).send("Received successfully!");
+});
+
+app.listen(port, () =>
+  console.log(
+    `✍️ Ditto webhook test server listening @ http://localhost:${port}`
+  )
+);
+```

@@ -3,22 +3,15 @@ title: 'Files'
 description: 'The file structure of text pulled down via the CLI'
 ---
 
-## `ditto/` Directory
-
-This directory houses the configuration file (`ditto/config.yml`) used by the CLI and is also the default write destination for any output files the CLI writes to disk.
-
-If you run the CLI in a directory that does not contain a `ditto/` folder, the folder and a default `config.yml` file will be automatically created.
-
-## Output Files
-
+## Output Directory
 The CLI outputs data from Ditto by writing files to disk. By default, these files are written to a `./ditto` folder relative to the current working directory, but the location of the output files can be customized by setting the environment variable `DITTO_TEXT_DIR`.
 
-```bash
-export DITTO_TEXT_DIR=./src/some-custom-path
+If a `DITTO_TEXT_DIR` environment variable is specified, the config will still be read from a `./ditto` folder relative to the current working directory that the CLI is executing in. 
 
-# writes output files to ./src/some-custom-path
-npx @dittowords/cli
-```
+## `./ditto` Directory
+This directory houses the configuration file (`./ditto/config.yml`) used by the CLI and is also the default write destination for any output files the CLI writes to disk.
+
+If you run the CLI in a directory that does not contain a `ditto/` folder, the folder and a default `config.yml` file will be automatically created.
 
 ## String File Naming Convention
 

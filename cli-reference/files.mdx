@@ -3,15 +3,13 @@ title: 'Files'
 description: 'The file structure of text pulled down via the CLI'
 ---
 
-## CLI Files
-
-### `ditto/` Directory
+## `ditto/` Directory
 
 This directory houses the configuration file (`ditto/config.yml`) used by the CLI and is also the default write destination for any output files the CLI writes to disk.
 
 If you run the CLI in a directory that does not contain a `ditto/` folder, the folder and a default `config.yml` file will be automatically created.
 
-#### Output Files
+## Output Files
 
 The CLI outputs data from Ditto by writing files to disk. By default, these files are written to a `./ditto` folder relative to the current working directory, but the location of the output files can be customized by setting the environment variable `DITTO_TEXT_DIR`.
 
@@ -22,31 +20,23 @@ export DITTO_TEXT_DIR=./src/some-custom-path
 npx @dittowords/cli
 ```
 
-The format and extension of such files will correspond to the `format` property of your configuration.
+## String File Naming Convention
 
-|   **Format**    | **File Extension** |  **Common Usage**   |
-| :-------------: | :----------------: | :-----------------: |
-|      flat       |       .json        |      Web apps       |
-|   structured    |       .json        |      Web apps       |
-|       icu       |       .json        |      Web apps       |
-|     android     |        .xml        | Native Android apps |
-|   ios-strings   |      .strings      |   Native iOS apps   |
-| ios-stringsdict |    .stringsdict    |   Native iOS apps   |
-
-All files created will adhere to the following template:
+All string files created will adhere to the following template:
 
 ```
 {source_name}__{variant_name}.{extension}
 ```
 
 - `source_name`: the name of the source a given file holds data for
-  - for projects, this is `{project-name}`
   - for components, this is `components__{folder_name}`
+  - for projects, this is `{project-name}`
 - `variant_name`: the API ID of a variant or `base` for files generated for non-variant text
 - `extension`: the file extension that corresponds to the configured format(s)
 
 To keep cross-platform behavior consistent, file names will be fully lowercase, have whitespace replaced with hyphens, and have non-word characters (with the exception of `-` and `_`) removed.
 
+## Format-specific Files
 If the configured format(s) result(s) in JSON files being generated, an `index.js` "driver file" is also created to simplify the process of integrating Ditto into web apps:
 
 ```js

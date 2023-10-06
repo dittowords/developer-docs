@@ -37,15 +37,12 @@ The first time you run the CLI, you'll be asked to provide an API key. You can g
     <Accordion title="Using an env variable for your API key">
     By default, your API key is saved to `$HOME/.config/ditto`; the default path can be overwritten by specifying a custom one via the environment variable `DITTO_CONFIG_FILE`.
 
-    The CLI will not prompt for an API key if a value is provided in your authentication file or in the environment variable `DITTO_API_KEY`.
+    The Ditto API key is read from the file at the path stored at `DITTO_CONFIG_FILE` unless it's explicitly provided by the env var `DITTO_API_KEY`. 
     </Accordion>
     <Accordion title="Updating your API key">
-    By default, your API key is saved to `$HOME/.config/ditto`; the default path can be overwritten by specifying a custom one via the environment variable `DITTO_CONFIG_FILE`.
-
     We don't recommend editing the authentication file by hand; if you need to remove a saved API key or swap one key with another, it's better to fully delete the file and then re-run the CLI.
 
     To change your API key, delete this file and you'll be prompted for a new key the next time that the CLI executes.
-
     </Accordion>
 </AccordionGroup>
 

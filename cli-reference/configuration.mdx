@@ -3,7 +3,8 @@ title: 'Configuration'
 description: 'Setting what text and formats the CLI pulls down'
 ---
 
-The `config.yml` file is the source of truth for a given directory about how the CLI should fetch and store data from Ditto. It includes information about which Ditto projects the CLI should pull text from, whether or not the component library should be included, in what format(s) the text should be stored, and more.
+## Overview
+The `config.yml` file is the source of truth for a given directory about how the CLI should fetch and store data from Ditto based on the specified properties. It includes information about which Ditto components the CLI should pull text from, the string file formats, and more. 
 
 This is the default configuration file that is generated the first time that the CLI is run in a given directory:
 
@@ -15,38 +16,14 @@ format: flat
 variants: true
 ```
 
-### Supported Properties
+## Supported Properties
+Listed below are each of the properties that you can specify in your CLI config. 
 
-#### Sources
+### `sources`
 
-A list of places the CLI should pull text data from. For the CLI to function, at least one source type (`projects` or `components`) is required.
+A list of places the CLI should pull text data from. For the CLI to function, at least one source type (`components` or `projects`) is required.
 
-##### `sources.projects`
-
-A list of projects to pull text from.
-
-```yml
-sources:
-  projects:
-    - id: 61b8d26105f8f400e97fdd14
-      name: Landing Page Copy
-    - id: 606cb89ac55041013d552f8b
-      name: User Settings
-```
-
-The `name` property is used for display purposes when referencing a project in the CLI, but does not have to be an exact match with the project name in Ditto.
-
-An `exclude_components` property can be added on a per-project basis to indicate that text items should only be pulled which are not associated with a component:
-
-```yml
-sources:
-  projects:
-    - id: 61b8d26105f8f400e97fdd14
-      name: Landing Page Copy
-      exclude_components: true
-```
-
-##### `sources.components`
+#### `sources.components`
 
 A boolean or configuration object indicating how component data should be pulled from your component library.
 
@@ -62,56 +39,91 @@ You can also pass an object that supports two complementary properties: `root` a
 - `root` controls behavior for components that are NOT in folders (i.e. that are at the _root_ of the component library)
 - `folders` controls behavior for components that are ARE in folders
 
-If `root` is `true` and `folders` is unspecified, **only components not in folders** will be fetched:
+Further examples on how to use the two properties: 
+
+<AccordionGroup>
+  <Accordion title="Only components not in folders">
+    If `root` is `true` and `folders` is unspecified, **only components not in folders** will be fetched:
+
+    ```yml
+    sources:
+      components:
+        root: true
+    ```
+  </Accordion>
+  <Accordion title="Only components in folders">
+    If `root` is `false` and `folders` is unspecified, **only components in any folder** will be fetched:
+
+    ```yml
+    sources:
+      components:
+        root: false
+    ```
+  </Accordion>
+  <Accordion title="Only components in specified folders">
+    If `root` is unspecified and `folders` contains a list of component folders, **only components in the specified folders** will be fetched:
+
+    ```yml
+    sources:
+      components:
+        folders:
+          - id: folder-api-id-1
+            name: Folder 1
+          - id: folder-api-id-2
+            name: Folder 2
+    ```
+  </Accordion>
+  <Accordion title="Only components in specified folders and not in a folder">
+    If `root` is `true` and `folders` contains a list of component folders, **non-folder components and components in the specified folders** will be fetched:
+
+    ```yml
+    sources:
+      components:
+        folders:
+          - id: folder-api-id-1
+            name: Folder 1
+          - id: folder-api-id-2
+            name: Folder 2
+    ```
+  </Accordion>
+  <Accordion title="Filtering by a property for a group of specified components">
+    `root` can also be specified as a configuration object with a `status` property to indicate that non-folder components should be fetched that have the indicated status:
+
+    ```yml
+    sources:
+      components:
+        root:
+          status: WIP
+    ```
+  </Accordion>
+</AccordionGroup>
+
+#### `sources.projects`
+
+A list of projects to pull text from.
 
 ```yml
 sources:
-  components:
-    root: true
+  projects:
+    - id: 61b8d26105f8f400e97fdd14
+      name: Landing Page Copy
+    - id: 606cb89ac55041013d552f8b
+      name: User Settings
 ```
 
-If `root` is `false` and `folders` is unspecified, **only components in any folder** will be fetched:
+- The `name` property is used for display purposes when referencing a project in the CLI, but does not have to be an exact match with the project name in Ditto.
+
+An `exclude_components` property can be added on a per-project basis to indicate that text items should only be pulled which are not associated with a component:
 
 ```yml
 sources:
-  components:
-    root: false
+  projects:
+    - id: 61b8d26105f8f400e97fdd14
+      name: Landing Page Copy
+      exclude_components: true
 ```
 
-If `root` is unspecified and `folders` contains a list of component folders, **only components in the specified folders** will be fetched:
-
-```yml
-sources:
-  components:
-    folders:
-      - id: folder-api-id-1
-        name: Folder 1
-      - id: folder-api-id-2
-        name: Folder 2
-```
-
-If `root` is `true` and `folders` contains a list of component folders, **non-folder components and components in the specified folders** will be fetched:
-
-```yml
-sources:
-  components:
-    folders:
-      - id: folder-api-id-1
-        name: Folder 1
-      - id: folder-api-id-2
-        name: Folder 2
-```
-
-`root` can also be specified as a configuration object with a `status` property to indicate that non-folder components should be fetched that have the indicated status:
-
-```yml
-sources:
-  components:
-    root:
-      status: WIP
-```
-
-#### Variants
+### `variants`
 
 Enables including variant information when pulling text data for configured sources.
 
@@ -121,15 +133,18 @@ Defaults to `false` if not specified.
 variants: true
 ```
 
-#### Format
+### `format`
 
-The format that text data should be generated in. Accepted values:
+The format that text data should be generated in. For examples of each format, see [JSON](/string-formats/json), [iOS Strings](/string-formats/ios), and [Android XML](/string-formats/android) in the String Formats documentation.
+
+Accepted values:
 
 - `structured`
 - `flat`
+- `nested`
 - `android`
 - `ios-strings`
-- `ios-stringsdict` (will only include text that has pluralization enabled in Ditto)
+- `ios-stringsdict`
 
 Defaults to `flat` if not specified.
 
@@ -147,7 +162,7 @@ format:
 
 You should not specify multiple JSON formats in the same configuration, as they will overwrite one another when writing to disk.
 
-#### Status
+### `status`
 
 If specified, only source data with the indicated status will be fetched. Accepted values:
 
@@ -188,7 +203,7 @@ If both are specified, a source-level `status` overrides a top-level `status`.
 
 More information about Ditto statuses can be found [here](https://www.dittowords.com/docs/tips-for-collaborating).
 
-#### Rich Text
+### `richText`
 
 If defined with the `flat` format, output values will be HTML strings (rich text) for each piece of source data.
 
@@ -200,7 +215,7 @@ You can read more about Ditto's rich text feature [here](https://www.dittowords.
 richText: true
 ```
 
-### Full Configuration Example
+## Full Configuration Example
 
 ```yml
 sources:
@@ -223,70 +238,3 @@ format: structured
 status: FINAL
 richText: false
 ```
-
-## CLI Files
-
-### `ditto/` Directory
-
-This directory houses the configuration file (`ditto/config.yml`) used by the CLI and is also the default write destination for any output files the CLI writes to disk.
-
-If you run the CLI in a directory that does not contain a `ditto/` folder, the folder and a default `config.yml` file will be automatically created.
-
-#### Output Files
-
-The CLI outputs data from Ditto by writing files to disk. By default, these files are written to a `./ditto` folder relative to the current working directory, but the location of the output files can be customized by setting the environment variable `DITTO_TEXT_DIR`.
-
-```bash
-export DITTO_TEXT_DIR=./src/some-custom-path
-
-# writes output files to ./src/some-custom-path
-npx @dittowords/cli
-```
-
-The format and extension of such files will correspond to the `format` property of your configuration.
-
-|   **Format**    | **File Extension** |  **Common Usage**   |
-| :-------------: | :----------------: | :-----------------: |
-|      flat       |       .json        |      Web apps       |
-|   structured    |       .json        |      Web apps       |
-|       icu       |       .json        |      Web apps       |
-|     android     |        .xml        | Native Android apps |
-|   ios-strings   |      .strings      |   Native iOS apps   |
-| ios-stringsdict |    .stringsdict    |   Native iOS apps   |
-
-All files created will adhere to the following template:
-
-```
-{source_name}__{variant_name}.{extension}
-```
-
-- `source_name`: the name of the source a given file holds data for
-  - for projects, this is `{project-name}`
-  - for components, this is `components__{folder_name}`
-- `variant_name`: the API ID of a variant or `base` for files generated for non-variant text
-- `extension`: the file extension that corresponds to the configured format(s)
-
-To keep cross-platform behavior consistent, file names will be fully lowercase, have whitespace replaced with hyphens, and have non-word characters (with the exception of `-` and `_`) removed.
-
-If the configured format(s) result(s) in JSON files being generated, an `index.js` "driver file" is also created to simplify the process of integrating Ditto into web apps:
-
-```js
-module.exports = {
-  ditto_component_library: {
-    base: require("./components__root__base.json"),
-    spanish: require("./components__root__spanish.json"),
-  },
-  project_xxx: {
-    base: require("./example-project__base.json"),
-    spanish: require("./example-project__spanish.json"),
-  },
-};
-```
-
-The driver file is currently generated as a CommonJS module, but it's possible that ESM will be supported in the future.
-
-## Authentication
-
-By default, your API key is saved to `$HOME/.config/ditto`; the default path can be overwritten by specifying a custom one via the environment variable `DITTO_CONFIG_FILE`.
-
-To change your API key, delete this file and you'll be prompted for a new key the next time that the CLI executes.

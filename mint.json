@@ -87,15 +87,8 @@
       "group": "CLI Reference",
       "pages": [
         "cli-reference/authentication",
-        {
-          "group": "Commands",
-          "pages": [
-            "cli-reference/endpoint/get",
-            "cli-reference/endpoint/create",
-            "cli-reference/endpoint/update",
-            "cli-reference/endpoint/delete"
-          ]
-        }
+        "cli-reference/configuration",
+        "cli-reference/files"
       ]
     },
     {

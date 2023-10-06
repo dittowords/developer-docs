@@ -1,0 +1,59 @@
+---
+title: 'Installation'
+description: 'Installation and authentication of the Ditto CLI'
+---
+
+## Overview
+
+The Ditto CLI allows developers to access the Ditto API[TODO: Link] directly from the command line. The Ditto CLI  updates text directly in local development. Teams can also build workflows with the CLI, including utilizing it in CI/CD.
+
+## Installation
+
+To install the CLI as a developer dependency:
+        
+<CodeGroup>
+```jsx npm
+npm i --save-dev @dittowords/cli
+```
+```jsx yarn
+yarn add --dev @dittowords/cli
+```
+</CodeGroup>
+
+After installation, you can get a list of the available CLI commands by running the following command inside your project directory:
+
+```
+npx @dittowords/cli -h
+```
+
+<Info>
+**Note:** [npx](https://medium.com/@maybekatz/introducing-npx-an-npm-package-runner-55f7d4bd282b) comes with `npm` 5.2 or higher
+</Info>
+
+## Authentication
+The first time you run the CLI, you'll be asked to provide an API key. You can generate an API key in your [developer integrations settings](https://app.dittowords.com/account/devtools).
+
+<AccordionGroup>
+    <Accordion title="Using an env variable for your API key">
+    By default, your API key is saved to `$HOME/.config/ditto`; the default path can be overwritten by specifying a custom one via the environment variable `DITTO_CONFIG_FILE`.
+
+    The CLI will not prompt for an API key if a value is provided in your authentication file or in the environment variable `DITTO_API_KEY`.
+    </Accordion>
+    <Accordion title="Updating your API key">
+    By default, your API key is saved to `$HOME/.config/ditto`; the default path can be overwritten by specifying a custom one via the environment variable `DITTO_CONFIG_FILE`.
+
+    We don't recommend editing the authentication file by hand; if you need to remove a saved API key or swap one key with another, it's better to fully delete the file and then re-run the CLI.
+
+    To change your API key, delete this file and you'll be prompted for a new key the next time that the CLI executes.
+
+    </Accordion>
+</AccordionGroup>
+
+## Fetching text
+Once you've installed, authenticated, and [configured](/cli-reference/configuration) the CLI, you'll be able to pull down up-to-date text by running the CLI:
+```
+npx @dittowords/cli pull
+```
+This will update the string files you have locally in the `/ditto` directory from where you're running the CLI. (For more information on the structure of files pulled by Ditto, see [files](/cli-reference/files))
+
+Because the Ditto CLI updates your string files locally, you can continue to manage it as you would with any other product update (push it to staging, commit changes to a branch, etc.).

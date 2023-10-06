@@ -95,10 +95,7 @@
       "group": "Additional Tools",
       "pages": [
         "additional-tools/webhooks", 
-        {
-          "group": "SDKs",
-          "pages": ["sdks/ditto-react", "sdks/ditto-flutter", "sdks/ditto-react-native"]
-        },
+        "additional-tools/sdks", 
         "additional-tools/vs-code", 
         "additional-tools/gh-action"
       ]

@@ -1,6 +1,6 @@
 ---
 title: 'Quickstart'
-description: 'Get set up to sync text in just a few minutes'
+description: 'Get set up to sync product text in just a few minutes'
 ---
 
 ## Authenticating
@@ -21,7 +21,7 @@ description: 'Get set up to sync text in just a few minutes'
 
 **Time Estimate:** 10 minutes
 
-In each Ditto workspace, there is a sample project that demonstrates what Ditto usage might look like, with sample comments, metadata, components, and a sample Figma file to connect to. 
+In each Ditto workspace, there is a sample project [TODO: INSERT NAME] that demonstrates what Ditto usage might look like, with sample comments, metadata, components, and a sample Figma file to connect to. 
 
 To quickly test drive Ditto’s developer integrations, you can connect the sample project in your workspace to a frontend using one of our sample repos. This is helpful for understanding: 
 
@@ -37,7 +37,7 @@ To quickly test drive Ditto’s developer integrations, you can connect the samp
     <Step title="Duplicate one of sample repos.">
         Sample repos can be found here. [TODO: LINK] Choose the one most similar to the framework you usually work with!
 
-        The repo is already set up with a pre-configured CLI config file and the keys from the sample components in your workspace.
+        The repo is already set up with a pre-configured CLI config file and the text files with developer IDs from the sample components in your workspace.
     </Step>
     <Step title="Install the Ditto CLI">
         Navigate to the `/ditto` [TODO: FIX] directory and install our CLI [TODO: LINK]. To install the CLI as a developer dependency:
@@ -74,7 +74,7 @@ We’ll describe setup solutions depending on how you currently manage strings i
     If you currently localize your text or build for mobile (iOS, Android), you fall in this category.
 - **Option 2: If you currently manage hardcoded text.**
 
-If you have a mix of the two in your code base, we’d recommend starting with Option 1. 
+If you have a mix of both in your code base, we’d recommend starting with Option 1. 
 
 ### Option 1: If you currently manage string files
 <Steps>
@@ -89,7 +89,7 @@ If you have a mix of the two in your code base, we’d recommend starting with O
     Instructions for installing and setting up the CLI can be found here [TODO: LINK]. 
     </Step>
     <Step title="Configure CLI to fetch the imported components">  
-    You can specify the components and the string file format(s) in the CLI config. 
+    You can specify the components and the string file format(s) in the [CLI config](/cli-reference/configuration). 
     </Step>
     <Step title="Update file routes">  
     With the strings now pulled down via the CLI, you can update the existing routes to string files to the new file paths. 
@@ -133,6 +133,7 @@ If it's easier, you can also start with an initial product area and expand the a
     - Use our VS Code Extension [TODO: Link] to insert string keys directly in your IDE based on matching text.
     - Use our [Figma plugin](https://www.figma.com/community/plugin/798826066406007173/ditto-manage-copy-from-design-to-production) to quickly surface and copy over the Ditto developer IDs of selected text in Figma. 
     You can also open our Figma plugin in Figma Dev Mode, which will surface IDs in addition to framework-specific code snippets.
+    - [TODO: INSERT i18N FRAMEWORKS]
     </Step>
 </Steps>
 

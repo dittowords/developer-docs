@@ -95,10 +95,6 @@
         "additional-tools/vs-code", 
         "additional-tools/gh-action"
       ]
-    },
-    {
-      "group": "Essentials",
-      "pages": ["essentials/markdown", "essentials/code", "essentials/images", "essentials/settings", "essentials/navigation"]
     }
   ],
   "footerSocials": {

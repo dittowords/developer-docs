@@ -58,7 +58,7 @@
   "navigation": [
     {
       "group": "Overview",
-      "pages": ["introduction", "concepts",  "quickstart", "sample-projects"]
+      "pages": ["introduction", "concepts",  "quickstart", "example-apps"]
     },
     {
       "group": "String Formats",

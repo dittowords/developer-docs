@@ -17,45 +17,36 @@ description: 'Get set up to sync product text in just a few minutes'
   </Step>
 </Steps>
 
-## Setting up the sample project
+## Setting up the sample project 
 
 **Time Estimate:** 10 minutes
 
 In each Ditto workspace, there is a sample project [TODO: INSERT NAME] that demonstrates what Ditto usage might look like, with sample comments, metadata, components, and a sample Figma file to connect to. 
 
-To quickly test drive Ditto’s developer integrations, you can connect the sample project in your workspace to a frontend using one of our sample repos. This is helpful for understanding: 
+To quickly test drive Ditto’s developer integrations, you can connect the sample project in your workspace to a frontend using one of our [example apps](/example-apps). This is helpful for understanding: 
 
 - How Ditto keeps text in sync from design to development (using our CLI)
 - How components in Ditto work (and integrate with a project)
 - How Ditto’s developer integrations work for React, iOS, or Android
+- How to utilize Ditto variants, plurals, and variable interpolation
 
 **Instructions:** 
 <Steps>
     <Step title="Navigate to the sample project">
         This project (and its corresponding components) should be in every workspace. 
     </Step>
-    <Step title="Duplicate one of sample repos.">
-        Sample repos can be found here. [TODO: LINK] Choose the one most similar to the framework you usually work with!
+    <Step title="Clone one of sample repos.">
+        Sample repos can be found [here](/example-apps) for several frameworks. Choose the one most similar to the framework you usually work with!
 
-        The repo is already set up with a pre-configured CLI config file and the text files with developer IDs from the sample components in your workspace.
+        The repo is already set up with a pre-configured CLI and the text files with developer IDs from the sample components in your workspace.
     </Step>
-    <Step title="Install the Ditto CLI">
-        Navigate to the `/ditto` [TODO: FIX] directory and install our CLI [TODO: LINK]. To install the CLI as a developer dependency:
+    <Step title="Run the app and install the CLI">
+        Follow the repo's `README` to run the app and install the pre-configured CLI -- this shouldn't take more than a few minutes! 
         
-        <CodeGroup>
-        ```jsx npm
-        npm i --save-dev @dittowords/cli
-        ```
-        ```jsx yarn
-        yarn add --dev @dittowords/cli
-        ```
-        </CodeGroup>
-
         The first time you run the Ditto CLI, you'll be asked to provide an API key. 
-
     </Step>
     <Step title="That's it! 🎉">
-        You're all set up. Run `npx @dittowords/cli pull` to fetch down the latest changes from Ditto. 
+        Afterwards, you're all set up. Run the CLI to fetch down the latest changes from Ditto. 
         
         You can also try making an edit in Ditto and then pulling in the latest updates to your string files via the CLI. 
     </Step>

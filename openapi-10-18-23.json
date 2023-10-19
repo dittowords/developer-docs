@@ -1,0 +1,1133 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "Ditto API",
+    "description": "Programmatically read and write data in your Ditto workspace."
+  },
+  "servers": [
+    {
+      "url": "https://api.dittowords.com/v1"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "ApiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "Authorization"
+      }
+    },
+    "schemas": {},
+    "parameters": {}
+  },
+  "paths": {
+    "/projects": {
+      "get": {
+        "tags": [
+          "Projects"
+        ],
+        "description": "Returns a list of Ditto projects. Only projects with Developer Mode enabled can be fetched.",
+        "summary": "Fetch projects",
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The projects will return as a JSON Object with each project under it's own project ID in the format project_<DITTO_PROJECT_ID> as the key in the object.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string"
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "url": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "name",
+                      "url"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/projects/{id}": {
+      "get": {
+        "tags": [
+          "Projects"
+        ],
+        "description": "Returns the contents of the Ditto project referred to by :id. You can find the id of a Ditto project from its URL: https://app.dittowords.com/doc/:id. Only projects with Developer Mode enabled can be fetched. ",
+        "summary": "Fetch text by project id",
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "name": "id",
+            "in": "path"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": false,
+            "name": "variant",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "flat",
+                "structured",
+                "nested",
+                "icu",
+                "android",
+                "ios-strings",
+                "ios-strings-dict"
+              ]
+            },
+            "required": false,
+            "name": "format",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "NONE",
+                "WIP",
+                "REVIEW",
+                "FINAL"
+              ]
+            },
+            "required": false,
+            "name": "status",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "boolean"
+            },
+            "required": false,
+            "name": "includeRichText",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "boolean"
+            },
+            "required": false,
+            "name": "exclude_components",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns contents of a project",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "object",
+                      "additionalProperties": {
+                        "nullable": true
+                      }
+                    },
+                    {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "project_name": {
+                            "type": "string"
+                          },
+                          "frames": {
+                            "type": "object",
+                            "additionalProperties": {
+                              "type": "object",
+                              "properties": {
+                                "frameName": {
+                                  "type": "string"
+                                },
+                                "blocks": {
+                                  "type": "object",
+                                  "additionalProperties": {
+                                    "type": "object",
+                                    "properties": {
+                                      "text": {
+                                        "anyOf": [
+                                          {
+                                            "type": "object",
+                                            "properties": {
+                                              "text": {
+                                                "type": "string"
+                                              },
+                                              "tags": {
+                                                "type": "array",
+                                                "items": {
+                                                  "type": "string"
+                                                }
+                                              },
+                                              "is_comp": {
+                                                "type": "boolean"
+                                              },
+                                              "notes": {
+                                                "type": "string"
+                                              },
+                                              "status": {
+                                                "type": "string"
+                                              }
+                                            },
+                                            "required": [
+                                              "text"
+                                            ]
+                                          },
+                                          {
+                                            "nullable": true
+                                          },
+                                          {
+                                            "nullable": true
+                                          }
+                                        ]
+                                      }
+                                    }
+                                  }
+                                },
+                                "otherText": {
+                                  "type": "object",
+                                  "additionalProperties": {
+                                    "type": "object",
+                                    "properties": {
+                                      "text": {
+                                        "type": "string"
+                                      },
+                                      "tags": {
+                                        "type": "array",
+                                        "items": {
+                                          "type": "string"
+                                        }
+                                      },
+                                      "is_comp": {
+                                        "type": "boolean"
+                                      },
+                                      "notes": {
+                                        "type": "string"
+                                      },
+                                      "status": {
+                                        "type": "string"
+                                      }
+                                    },
+                                    "required": [
+                                      "text"
+                                    ]
+                                  }
+                                }
+                              },
+                              "required": [
+                                "frameName"
+                              ]
+                            }
+                          }
+                        },
+                        "required": [
+                          "project_name",
+                          "frames"
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/projects/{id}/components": {
+      "get": {
+        "tags": [
+          "Projects"
+        ],
+        "description": "Returns the components used in the specified project. Format is identical to the format used by the Fetch components endpoint.",
+        "summary": "Fetch component text by project id",
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "name": "id",
+            "in": "path"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": false,
+            "name": "variant",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "flat",
+                "structured",
+                "nested",
+                "icu",
+                "android",
+                "ios-strings",
+                "ios-strings-dict"
+              ]
+            },
+            "required": false,
+            "name": "format",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "NONE",
+                "WIP",
+                "REVIEW",
+                "FINAL"
+              ]
+            },
+            "required": false,
+            "name": "status",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "boolean"
+            },
+            "required": false,
+            "name": "includeRichText",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns components a project",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "object",
+                      "additionalProperties": {
+                        "anyOf": [
+                          {
+                            "type": "string"
+                          },
+                          {
+                            "type": "object",
+                            "additionalProperties": {
+                              "type": "string"
+                            }
+                          },
+                          {
+                            "type": "object",
+                            "additionalProperties": {
+                              "type": "object",
+                              "properties": {
+                                "text": {
+                                  "type": "string"
+                                },
+                                "status": {
+                                  "type": "string"
+                                },
+                                "notes": {
+                                  "type": "string"
+                                },
+                                "tags": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "string"
+                                  }
+                                },
+                                "variables": {
+                                  "type": "object",
+                                  "additionalProperties": {
+                                    "type": "object",
+                                    "properties": {}
+                                  }
+                                },
+                                "plurals": {
+                                  "anyOf": [
+                                    {
+                                      "nullable": true
+                                    },
+                                    {
+                                      "type": "object",
+                                      "additionalProperties": {
+                                        "type": "string"
+                                      }
+                                    },
+                                    {
+                                      "nullable": true
+                                    }
+                                  ]
+                                },
+                                "variants": {
+                                  "type": "object",
+                                  "additionalProperties": {
+                                    "type": "object",
+                                    "properties": {
+                                      "text": {
+                                        "type": "string"
+                                      },
+                                      "variables": {
+                                        "type": "object",
+                                        "additionalProperties": {
+                                          "type": "object",
+                                          "properties": {}
+                                        }
+                                      },
+                                      "plurals": {
+                                        "type": "object",
+                                        "additionalProperties": {
+                                          "type": "string"
+                                        }
+                                      }
+                                    },
+                                    "required": [
+                                      "text",
+                                      "variables",
+                                      "plurals"
+                                    ]
+                                  }
+                                }
+                              },
+                              "required": [
+                                "text",
+                                "variables",
+                                "plurals",
+                                "variants"
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/components": {
+      "get": {
+        "tags": [
+          "Components"
+        ],
+        "description": "Returns the components in the workspace of the requesting user. Only component libraries with Developer Mode enabled can be fetched.",
+        "summary": "Fetch component text",
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": false,
+            "name": "variant",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "flat",
+                "structured",
+                "nested",
+                "icu",
+                "android",
+                "ios-strings",
+                "ios-strings-dict"
+              ]
+            },
+            "required": false,
+            "name": "format",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "NONE",
+                "WIP",
+                "REVIEW",
+                "FINAL"
+              ]
+            },
+            "required": false,
+            "name": "status",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "boolean"
+            },
+            "required": false,
+            "name": "includeRichText",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns components",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "object",
+                      "additionalProperties": {
+                        "anyOf": [
+                          {
+                            "type": "string"
+                          },
+                          {
+                            "type": "object",
+                            "additionalProperties": {
+                              "type": "string"
+                            }
+                          },
+                          {
+                            "type": "object",
+                            "additionalProperties": {
+                              "type": "object",
+                              "properties": {
+                                "text": {
+                                  "type": "string"
+                                },
+                                "status": {
+                                  "type": "string"
+                                },
+                                "notes": {
+                                  "type": "string"
+                                },
+                                "tags": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "string"
+                                  }
+                                },
+                                "variables": {
+                                  "type": "object",
+                                  "additionalProperties": {
+                                    "type": "object",
+                                    "properties": {}
+                                  }
+                                },
+                                "plurals": {
+                                  "anyOf": [
+                                    {
+                                      "nullable": true
+                                    },
+                                    {
+                                      "type": "object",
+                                      "additionalProperties": {
+                                        "type": "string"
+                                      }
+                                    },
+                                    {
+                                      "nullable": true
+                                    }
+                                  ]
+                                },
+                                "variants": {
+                                  "type": "object",
+                                  "additionalProperties": {
+                                    "type": "object",
+                                    "properties": {
+                                      "text": {
+                                        "type": "string"
+                                      },
+                                      "variables": {
+                                        "type": "object",
+                                        "additionalProperties": {
+                                          "type": "object",
+                                          "properties": {}
+                                        }
+                                      },
+                                      "plurals": {
+                                        "type": "object",
+                                        "additionalProperties": {
+                                          "type": "string"
+                                        }
+                                      }
+                                    },
+                                    "required": [
+                                      "text",
+                                      "variables",
+                                      "plurals"
+                                    ]
+                                  }
+                                }
+                              },
+                              "required": [
+                                "text",
+                                "variables",
+                                "plurals",
+                                "variants"
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Components"
+        ],
+        "description": "Used for updating text data for components in the workspace of the requesting user.\n\n-> Currently only supports updating variant text on components via the variant query parameter (an error will be thrown if not specified)\n\n-> Currently only available for teams on team or enterprise plans",
+        "summary": "Update component text variant",
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "name": "variant",
+            "in": "query"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "object",
+                  "properties": {
+                    "text": {
+                      "type": "string"
+                    },
+                    "notes": {
+                      "type": "string"
+                    },
+                    "tags": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "plurals": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "text": {
+                            "type": "string"
+                          },
+                          "form": {
+                            "type": "string",
+                            "enum": [
+                              "one",
+                              "two",
+                              "zero",
+                              "few",
+                              "many",
+                              "other"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "text",
+                          "form"
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Update/skip counts",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "componentsUpdated": {
+                      "type": "number"
+                    },
+                    "componentsSkipped": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "componentsUpdated",
+                    "componentsSkipped"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Components"
+        ],
+        "description": "For more information about importing components via a file please see: https://www.dittowords.com/docs/importing-string-files. The request body must be of type multipart/form-data.",
+        "summary": "Import components via a file",
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {}
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Returns how many components were inserted.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "componentsInserted": {
+                      "type": "number"
+                    },
+                    "firstImportedId": {
+                      "anyOf": [
+                        {},
+                        {
+                          "nullable": true
+                        },
+                        {
+                          "nullable": true
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "componentsInserted",
+                    "firstImportedId"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/component-folders": {
+      "get": {
+        "tags": [
+          "Components Folders"
+        ],
+        "description": "Returns an object of component folders in the requesting user's workspace.",
+        "summary": "Fetch component folders",
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns component folders",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/component-folders/{api_id}/components": {
+      "get": {
+        "tags": [
+          "Components Folders"
+        ],
+        "description": "Returns the components in the specified folder. Format is identical to the format used by the Fetch components endpoint.",
+        "summary": "Fetch component text by component folder",
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "name": "api_id",
+            "in": "path"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": false,
+            "name": "variant",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "flat",
+                "structured",
+                "nested",
+                "icu",
+                "android",
+                "ios-strings",
+                "ios-strings-dict"
+              ]
+            },
+            "required": false,
+            "name": "format",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "NONE",
+                "WIP",
+                "REVIEW",
+                "FINAL"
+              ]
+            },
+            "required": false,
+            "name": "status",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "boolean"
+            },
+            "required": false,
+            "name": "includeRichText",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns a component folder's components",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "object",
+                      "additionalProperties": {
+                        "anyOf": [
+                          {
+                            "type": "string"
+                          },
+                          {
+                            "type": "object",
+                            "additionalProperties": {
+                              "type": "string"
+                            }
+                          },
+                          {
+                            "type": "object",
+                            "additionalProperties": {
+                              "type": "object",
+                              "properties": {
+                                "text": {
+                                  "type": "string"
+                                },
+                                "status": {
+                                  "type": "string"
+                                },
+                                "notes": {
+                                  "type": "string"
+                                },
+                                "tags": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "string"
+                                  }
+                                },
+                                "variables": {
+                                  "type": "object",
+                                  "additionalProperties": {
+                                    "type": "object",
+                                    "properties": {}
+                                  }
+                                },
+                                "plurals": {
+                                  "anyOf": [
+                                    {
+                                      "nullable": true
+                                    },
+                                    {
+                                      "type": "object",
+                                      "additionalProperties": {
+                                        "type": "string"
+                                      }
+                                    },
+                                    {
+                                      "nullable": true
+                                    }
+                                  ]
+                                },
+                                "variants": {
+                                  "type": "object",
+                                  "additionalProperties": {
+                                    "type": "object",
+                                    "properties": {
+                                      "text": {
+                                        "type": "string"
+                                      },
+                                      "variables": {
+                                        "type": "object",
+                                        "additionalProperties": {
+                                          "type": "object",
+                                          "properties": {}
+                                        }
+                                      },
+                                      "plurals": {
+                                        "type": "object",
+                                        "additionalProperties": {
+                                          "type": "string"
+                                        }
+                                      }
+                                    },
+                                    "required": [
+                                      "text",
+                                      "variables",
+                                      "plurals"
+                                    ]
+                                  }
+                                }
+                              },
+                              "required": [
+                                "text",
+                                "variables",
+                                "plurals",
+                                "variants"
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/variables": {
+      "get": {
+        "tags": [
+          "Variables"
+        ],
+        "description": "Returns the variables in the workspace of the requesting user.",
+        "summary": "Fetch variables",
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A JSON body containing variable information from your workspace, keyed by variable name.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "anyOf": [
+                      {
+                        "type": "object",
+                        "properties": {
+                          "example": {
+                            "type": "number"
+                          },
+                          "fallback": {
+                            "anyOf": [
+                              {
+                                "type": "number"
+                              },
+                              {
+                                "type": "string"
+                              }
+                            ]
+                          }
+                        },
+                        "required": [
+                          "example"
+                        ]
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "example": {
+                            "type": "string"
+                          },
+                          "fallback": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "example"
+                        ]
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "text": {
+                            "type": "string"
+                          },
+                          "url": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "text",
+                          "url"
+                        ]
+                      },
+                      {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      {
+                        "type": "object",
+                        "additionalProperties": {
+                          "type": "string"
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/variants": {
+      "get": {
+        "tags": [
+          "Variants"
+        ],
+        "description": "Returns a list of variants in the workspace of the requesting user.",
+        "summary": "Fetch variants",
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Variants in your workspace",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string"
+                      },
+                      "description": {
+                        "type": "string"
+                      },
+                      "apiID": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "name",
+                      "description",
+                      "apiID"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -71,11 +71,42 @@
         {
           "group": "Endpoints",
           "pages": [
-            "api-reference/endpoint/get",
-            "api-reference/endpoint/create",
-            "api-reference/endpoint/update",
-            "api-reference/endpoint/delete"
-          ]
+            {
+              "group": "Components",
+              "pages": [
+                "api-reference/components/fetch-component-text",
+                "api-reference/components/import-components-via-a-file",
+                "api-reference/components/update-component-text-variant"
+              ]
+            },
+            {
+              "group": "Component Folders",
+              "pages": [
+                "api-reference/components-folders/fetch-component-folders",
+                "api-reference/components-folders/fetch-component-text-by-component-folder"
+              ]
+            },
+            {
+              "group": "Projects",
+              "pages": [
+                "api-reference/projects/fetch-component-text-by-project-id",
+                "api-reference/projects/fetch-projects",
+                "api-reference/projects/fetch-text-by-project-id"
+              ]
+            },
+            {
+              "group": "Variables",
+              "pages": [
+                "api-reference/variables/fetch-variables"
+              ]
+            },
+            {
+              "group": "Variants",
+              "pages": [
+                "api-reference/variants/fetch-variants"
+              ]
+            }
+        ]
         }
       ]
     },
